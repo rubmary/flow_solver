@@ -34,30 +34,6 @@ int valid[][4] =
 		{0, 3, 4, 7}
 	};
 
-char print_dir(int x, int y) {
-	if (x == -1 && y == 0)
-		return '^';
-	if (x == 1 && y == 0)
-		return 'v';
-	if (x == 0 && y == 1)
-		return '>';
-	if (x == 0 && y == -1)
-		return '<';
-	cout << "ocurrio un error :)..." << endl;
-	exit(1);
-}
-
-void check_dirs(){
-	for (int i = 0; i < 4; i++)
-		cout << print_dir(dirx0[i], diry0[i]);
-	cout << endl;
-
-	for (int i = 0; i < 6; i++)
-		cout << print_dir(dirx1[i], diry1[i]) 
-			 << print_dir(dirx2[i], diry2[i]) << ' ';
-	cout << endl;
-}
-
 void read_board() {
 	string s;
 	while (cin >> s)
@@ -241,5 +217,16 @@ void make_clauses() {
 	}
 }
 int main() {
-	check_dirs();
+	read_board();
+	make_clauses();
+	int total_clauses = cnf.size();
+
+	cout << "p cnf " << total_var << ' ' << total_clauses << endl;
+
+	for (int i = 0; i < total_clauses; i++) {
+		int size = cnf[i].size();
+		for (int j = 0; j < size; j++)
+			cout << cnf[i][j] << ' ';
+		cout << 0 << endl;
+	}
 }
