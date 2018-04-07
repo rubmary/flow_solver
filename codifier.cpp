@@ -20,7 +20,15 @@ int diry1[] = { 0,  0,  0,  1,  1,  0};
 int dirx2[] = { 0,  1,  0,  1,  0,  0};
 int diry2[] = { 1,  0, -1,  0, -1, -1};
 
-int valid[][4] = 
+int valid0[][4] =
+	{
+		{}, {}, {}, {}, {}, {},
+		{1, 3, 5, 8},
+		{2, 4, 5, 9},
+		{0, 1, 2, 6},
+		{0, 3, 4, 7}
+	};
+int valid1[][4] = 
 	{
 		{1, 3, 5, 8},
 		{1, 3, 5, 8},
@@ -28,9 +36,15 @@ int valid[][4] =
 		{2, 4, 5, 9},
 		{2, 4, 5, 9},
 		{0, 1, 2, 6},
-		{1, 3, 5, 8},
+	};
+
+int valid2[][4] =
+	{
 		{2, 4, 5, 9},
 		{0, 1, 2, 6},
+		{0, 3, 4, 7},
+		{0, 1, 2, 6},
+		{0, 3, 4, 7},
 		{0, 3, 4, 7}
 	};
 
@@ -40,8 +54,9 @@ void read_board() {
 		B.push_back(s);
 }
 
-void map_colors(vector <string> B) {
-	N = B.size(), B[0].size();
+void map_colors() {
+	N = B.size();
+	M = B[0].size();
 	R = 0;
 	K = 10;
 	K1 = 6;
@@ -50,7 +65,7 @@ void map_colors(vector <string> B) {
 
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++){
-			char c = c;
+			char c = B[i][j];
 			if (c != '.' && colors.find(c) == colors.end())
 				colors[c] = R++;
 		}
@@ -73,6 +88,22 @@ void make_variables() {
 		for (int j = 0; j < M; j++)
 			for (int k = 0; k < K; k++)
 				d[i][j][k] = ++total_var;
+
+// 		for (int i = 0; i < N; i++)
+// 		for (int j = 0; j < M; j++)
+// 			for (int r = 0; r < R; r++)
+// 				if (c[i][j][r] == 0){
+// 					cout << "error" << endl;
+// 					exit(1);
+// 				}
+
+// 	for (int i = 0; i < N; i++)
+// 		for (int j = 0; j < M; j++)
+// 			for (int k = 0; k < K; k++)
+// 				if (d[i][j][k] == 0){
+// 					cout << "error" << endl;
+// 					exit(1);
+// 				}
 }
 
 bool valid_cell(int r, int c) {
@@ -86,24 +117,24 @@ void make_clauses() {
 	// Cada casilla tiene un color
 	clause.resize(R);
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++){
-			
+		for (int j = 0; j < M; j++){
 			for (int r = 0; r < R; r++)
 				clause[r] = c[i][j][r];
 			cnf.push_back(clause);
 		}
 	}
 
-	// No hay dos casillas con mas de un color
+	// No hay una casillas con mas de un color
 	clause.resize(2);
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			for (int r1 = 0; r1 < R; r1++)
+		for (int j = 0; j < M; j++) {
+			for (int r1 = 0; r1 < R; r1++) {
 				for (int r2 = r1 + 1; r2 < R; r2++) {
 					clause[0] = -c[i][j][r1];
 					clause[1] = -c[i][j][r2];
+					cnf.push_back(clause);
+				}
 			}
-			cnf.push_back(clause);
 		}
 	}
 
@@ -132,14 +163,14 @@ void make_clauses() {
 	// No hay dos casillas con mas de una direccion
 	clause.resize(2);
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
+		for (int j = 0; j < M; j++) {
 			for (int k1 = 0; k1 < K; k1++){
-				for (int k2 = 0; k2 < K; k2++) {
+				for (int k2 = k1 + 1; k2 < K; k2++) {
 					clause[0] = -d[i][j][k1];
 					clause[1] = -d[i][j][k2];
+					cnf.push_back(clause);
 				}
-			}
-			cnf.push_back(clause);
+			}			
 		}
 	}
 
@@ -182,16 +213,18 @@ void make_clauses() {
 				y1 = j + diry1[k];
 				x2 = i + dirx2[k];
 				y2 = j + diry2[k];
+
 				if (valid_cell(x1, y1) && valid_cell(x2, y2)) {
 					clause.resize(1);
 					clause[0] = -d[i][j][k];
-					for (int s = 0; s < 4; s++)
-						clause.push_back(d[i+x1][j+y1][s]);
+					for (int s = 0; s < 4; s++){
+						clause.push_back(d[x1][y1][valid1[k][s]]);
+					}
 					cnf.push_back(clause);
 					clause.resize(1);
 					clause[0] = -d[i][j][k];
 					for (int s = 0; s < 4; s++)
-						clause.push_back(d[i+x2][j+y2][s]);
+						clause.push_back(d[x2][y2][valid2[k][s]]);
 				}
 
 		}
@@ -200,7 +233,7 @@ void make_clauses() {
 			y0 = j + diry0[k];
 			if (valid_cell(x0, y0)) {
 				for (int s = 0; s < 4; s++)
-					clause.push_back(d[i+x0][j+y0][s]);
+					clause.push_back(d[x0][y0][valid0[k][s]]);
 			}
 		}
 	}
@@ -212,14 +245,18 @@ void make_clauses() {
 		else {
 			for (int k = 0; k < K1; k++)
 				cnf.push_back(vector<int>(1, -d[i][j][k]));
-			cnf.push_back(vector<int>(1, colors[B[i][j]]));
+			cnf.push_back(vector<int>(1, c[i][j][colors[B[i][j]]]));
 		}
 	}
 }
 int main() {
 	read_board();
+	map_colors();
+	make_variables();
+	// cout << total_var << endl;
 	make_clauses();
 	int total_clauses = cnf.size();
+
 
 	cout << "p cnf " << total_var << ' ' << total_clauses << endl;
 
