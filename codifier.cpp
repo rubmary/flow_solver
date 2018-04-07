@@ -88,22 +88,6 @@ void make_variables() {
 		for (int j = 0; j < M; j++)
 			for (int k = 0; k < K; k++)
 				d[i][j][k] = ++total_var;
-
-// 		for (int i = 0; i < N; i++)
-// 		for (int j = 0; j < M; j++)
-// 			for (int r = 0; r < R; r++)
-// 				if (c[i][j][r] == 0){
-// 					cout << "error" << endl;
-// 					exit(1);
-// 				}
-
-// 	for (int i = 0; i < N; i++)
-// 		for (int j = 0; j < M; j++)
-// 			for (int k = 0; k < K; k++)
-// 				if (d[i][j][k] == 0){
-// 					cout << "error" << endl;
-// 					exit(1);
-// 				}
 }
 
 bool valid_cell(int r, int c) {
@@ -160,7 +144,7 @@ void make_clauses() {
 		}
 	}
 
-	// No hay dos casillas con mas de una direccion
+	// No hay una casillas con mas de una direccion
 	clause.resize(2);
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
@@ -217,24 +201,28 @@ void make_clauses() {
 				if (valid_cell(x1, y1) && valid_cell(x2, y2)) {
 					clause.resize(1);
 					clause[0] = -d[i][j][k];
-					for (int s = 0; s < 4; s++){
+					for (int s = 0; s < 4; s++)
 						clause.push_back(d[x1][y1][valid1[k][s]]);
-					}
+					
 					cnf.push_back(clause);
 					clause.resize(1);
 					clause[0] = -d[i][j][k];
 					for (int s = 0; s < 4; s++)
 						clause.push_back(d[x2][y2][valid2[k][s]]);
+					cnf.push_back(clause);
 				}
 
 		}
 		for (int k = K1; k < K; k++) {
+			clause.resize(1);
+			clause[0] = -d[i][j][k];
 			x0 = i + dirx0[k];
 			y0 = j + diry0[k];
 			if (valid_cell(x0, y0)) {
 				for (int s = 0; s < 4; s++)
 					clause.push_back(d[x0][y0][valid0[k][s]]);
 			}
+			cnf.push_back(clause);
 		}
 	}
 

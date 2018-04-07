@@ -1,25 +1,46 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
+string dir[] = {"└", "│", "┘", "┌", "─", "┐", "c", "c", "c", "c", "c"};
+char color[] = {'R', 'B', 'Y', 'G', 'O', 'C', 'M', 'm', 'P', 'A', 'W', 'g', 'T', 'b', 'c', 'p' };
+
+vector < vector <int> > D, C;
 int main() {
 
 	string s;
 	cin >> s;
-
-	int N = 14, M = 14, R = 15;
+	int val;
+	int N = 12, M = 12, R = 10;
+	D = vector< vector <int> > (N, vector<int> (M));
+	C = vector< vector <int> > (N, vector<int> (M));
+	
 	for (int i = 0; i < N; i++){
 		for (int j = 0; j < M; j++) {
 			for (int r = 0; r < R; r++){
-				int x;
-				cin >> x;
-				if (x > 0){
-					if (r < 10)
-						cout << 0;
-					cout << r << ' ';
-				}
+				cin >> val;
+				if (val > 0)
+					C[i][j] = r;
 			}
 		}
+	}
+
+	for (int i = 0; i < N; i++){
+		for (int j = 0; j < M; j++) {
+			for (int k = 0; k < 10; k++) {
+				cin >> val;
+				if (val > 0)
+					D[i][j] = k;
+			}
+		}
+	}
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++)
+			if (D[i][j] >= 6)
+				cout << color[C[i][j]];
+			else
+				cout << dir[D[i][j]];
 		cout << endl;
 	}
-	cout << endl;
 }
