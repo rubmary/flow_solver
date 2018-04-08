@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 	string run_codifier, run_decodifier, run_minisat, run_cycles;
 	run_codifier   = "./codifier < puzzles/" + name + "> delta.txt";
 	run_minisat    = "minisat delta.txt sol.txt";
-	run_decodifier = "./decodifier < sol.txt > solutions/sol_" + name;
+	run_decodifier = "./decodifier " + name + " < sol.txt > solutions/sol_" + name;
 	run_cycles = "./check_cycles < sol.txt";
 	int system_answer = -1;
 	
