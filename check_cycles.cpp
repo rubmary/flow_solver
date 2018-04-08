@@ -83,8 +83,7 @@ bool solve(){
 
 int main(int argc, char **argv){
 	ifstream file("variables.txt");
-	string name = argv[1];
-	ofstream f_cycles(name.c_str());
+	ofstream f_cycles("cycles.txt");
 	file >> N >> M >> R;
 	string _;
 	cin >> _;

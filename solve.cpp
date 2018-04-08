@@ -8,37 +8,23 @@ using namespace std;
 
 int main(int argc, char **argv) {
 	string name = argv[1];
-	string run_codifier, run_decodifier, run_minisat;
+	string run_codifier, run_decodifier, run_minisat, run_cycles;
 	run_codifier   = "./codifier < puzzles/" + name + "> delta.txt";
 	run_minisat    = "minisat delta.txt sol.txt";
 	run_decodifier = "./decodifier < sol.txt > solutions/sol_" + name;
+	run_cycles = "./check_cycles < sol.txt";
 	int system_answer = -1;
 	
 	system_answer = system(run_codifier.c_str());
 
-	int t = 0;
-
 	while (true) {
-		t++;
-		system_answer = system(run_minisat.c_str());
-		if (t > 1000)
-			run_decodifier.resize(run_decodifier.size() - 1);
-		if (t > 100)
-			run_decodifier.resize(run_decodifier.size() - 1);
-		if (t > 10)
-			run_decodifier.resize(run_decodifier.size() - 1);
-		if (t > 1)
-			run_decodifier.resize(run_decodifier.size() - 1);
 
-		run_decodifier = run_decodifier + to_string(t);
-		system_answer = system(run_decodifier.c_str());
-		string name = "cycles.txt" + to_string(t);
-		string run_cycles = "./check_cycles  " + name + " < sol.txt";
+		system_answer = system(run_minisat.c_str());
 		bool cycle = system(run_cycles.c_str());
 		if (!cycle)
 			break;
 		
-		ifstream delta("delta.txt"), cycles(name.c_str());
+		ifstream delta("delta.txt"), cycles("cycles.txt");
 		string _;
 		int var, clauses, x;
 		vector <int> clause;

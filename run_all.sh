@@ -1,6 +1,7 @@
 make solve
 make codifier
 make decodifier
+make check_cycles
 ./solve extreme_10x10_01.txt
 ./solve extreme_10x10_30.txt
 ./solve extreme_11x11_07.txt
