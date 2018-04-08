@@ -15,3 +15,6 @@ clean:
 
 cleanData:
 		rm -f *.txt
+
+cleanSolutions:
+		rm -f images/*.svg solutions/*.txt

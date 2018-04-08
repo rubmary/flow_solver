@@ -95,7 +95,6 @@ void draw_square(int x, int y, int L, string color) {
 void make_square(int i, int j) {
 	int x = i*L, y = j*L;
 	string cur_color = back_color[C[i][j]];
-
 	draw_square(x, y, L, cur_color);
 }
 
