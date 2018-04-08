@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
+#include <fstream>
 using namespace std;
 
 
@@ -241,13 +242,13 @@ int main() {
 	read_board();
 	map_colors();
 	make_variables();
-	// cout << total_var << endl;
 	make_clauses();
 	int total_clauses = cnf.size();
 
-
+	ofstream file("variables.txt");
+	file << N << ' ' << M << ' ' << R;
+	
 	cout << "p cnf " << total_var << ' ' << total_clauses << endl;
-
 	for (int i = 0; i < total_clauses; i++) {
 		int size = cnf[i].size();
 		for (int j = 0; j < size; j++)

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
 using namespace std;
 
 string dir[] = {"└", "│", "┘", "┌", "─", "┐", "c", "c", "c", "c", "c"};
@@ -11,7 +12,10 @@ int main() {
 	string s;
 	cin >> s;
 	int val;
-	int N = 12, M = 12, R = 10;
+	int N = -1, M = -1, R = -1;
+	ifstream file("variables.txt");
+	file >> N >> M >> R;
+
 	D = vector< vector <int> > (N, vector<int> (M));
 	C = vector< vector <int> > (N, vector<int> (M));
 	
