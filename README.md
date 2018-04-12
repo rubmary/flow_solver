@@ -1,3 +1,3 @@
 # flow_solver
 
-Codifier to solve flow game to prpositional theory an use sat-solver
+Codifier to solve Flow game through propositional theory and using a SAT-solver.
