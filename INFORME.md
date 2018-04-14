@@ -10,9 +10,10 @@ Fernando Yánez 13-11506 <br>
 
 # 1. Resumen
 
-El objetivo del proyecto fue construir un solucionador de juegos "Flow". El juego consta de un tablero NxM, el cual inicialmente tiene 2R círculos, de R colores diferentes con exactamente 2 círculos por color, en celdas diferentes del tablero y el resto del tablero se encuentra vacío. El objetivo del juego consiste en conectar cada par de puntos del mismo color formando un camino con celdas que compartan un lado, sin que los caminos se intersecten y si dejar celdas vacías.
+El objetivo del proyecto fue construir un solucionador de juegos "Flow". El juego consta de un tablero NxM, el cual inicialmente tiene 2R círculos, de R colores diferentes con exactamente 2 círculos por color, en celdas diferentes del tablero y el resto del tablero se encuentra vacío. El objetivo del juego consiste en conectar cada par de puntos del mismo color formando un camino con celdas que compartan un lado, sin que los caminos se intersecten y si dejar celdas vacías. Una posible instancia resuelta del juego es la siguiente:
 
-Así pues, se utilizó un *SAT solver*, para lo cual primero se creó una teoría proposicional &Delta; tal que la teoría tiene una solución $acíclica$ si y sólo si el juego tiene solución y cada solución del juego está en correspondencia con un modelo de la teoría. Solución $acíclica$ significa que no se tienen ciclos en el grafo generado al considerar las celdas como vértices y los arcos los lados que pertenezcan a dos celdas del mismo color.
+
+De esta forma, se utilizó un *SAT solver*, para lo cual primero se creó una teoría proposicional &Delta; tal que la teoría tiene una solución $acíclica$ si y sólo si el juego tiene solución y cada solución del juego está en correspondencia con un modelo de la teoría. Solución $acíclica$ significa que no se tienen ciclos en el grafo generado al considerar las celdas como vértices y los arcos los lados que pertenezcan a dos celdas del mismo color.
 
 Para esto se realizó lo siguiente:
 1. Un codificador que, dado una configuracion inicial de Flow, lo traduce en una teoría proposicional &Delta;
@@ -55,18 +56,24 @@ Las cláusulas utilizadas fueron las siguientes:
 
 * Cada casilla tiene un color
 
-$$
-(\exists r | 0 \leq r  \leq R : c(i, j, r))
-$$
+(∃r∣0≤r≤R:c(i,j,r))
 
+* No hay una casilla con más de un color
 
-## Cantidad total de cláusulas
+(\forall r1, r2 | r1 \neq r2 : c(i, j, r1) \rightarrow \neg c(i, j , r2))
 
-La cantidad total de cláusulas es:
+* Cada casilla tiene una dirección
 
-| Complejidad|
-| :-: |
-| (CAMBIAR) O(NM(N + M)K<sup>2</sup><sub>max</sub>) |
+(∃k∣0≤k≤K:c(i,j,k))
+
+* No hay una casillas con mas de una dirección
+
+(\forall k1, k2 | k1 \neq k2 : c(i, j, k1) \rightarrow \neg c(i, j , k2))
+
+* Consistencia de colores de casillas en los caminos: esto indica que las casillas que formen al mismo camino, deben tener el mismo color.
+
+* Consistencia en la forma del camino: cada dirección está relacionada a cuales son las celdas adyacentes que forman parte del camino, estas restricciones modelan esta parte del problema.
+
 
 ## CNF
 
@@ -76,6 +83,8 @@ Todas las cláusulas pueden ser llevadas a un formato CNF, utilizando la propied
 
 Las imágenes obtenidas se encuentran en la carpeta *images*. Se lograron resolver 28 de 28 configuraciones iniciales del juego con dificultad variante (número de colores y tamaño del tablero).
 
-Es importante destacar que dado que ninguna celda del tablero puede quedar vacía, dadas las clausulas con las que se trabajó, era posible que se crearan ciclos de cualquier color (no correspondiendo a ninguna celda terminal). Como esto no representa una solución valida para el juego, un primero intento de atacar esto fue unir el conjunto de las negaciones de cada solución con ciclos que fuese propuesta por el SAT-solver con la teoría $Delta inicial del juego. El resultado de esta medida no fue óptimo ya que existían configuraciones en las que no solo se creaban varios ciclos dentro del tablero, sino que la negación de una solución particular no toma en cuenta las combinaciones de los ciclos de todos los colores.
+Es importante destacar que las cláusulas que se utilizaron no restrigieron la creación de ciclos, esto, aunado a que ninguna celda del tablero puede quedar vacía, podía generar soluciones como la siguiente.
 
-Es por esto que la medida final ante este problema fue reconocer las posiciones del tablero donde se creaban ciclos y negar únicamente el conjunto de variables que representan las direcciones de las celdas que forman parte de él.
+Como esto no representa una solución valida para el juego, un primero intento de atacar esto fue unir el conjunto de las negaciones de cada solución con ciclos que fuese propuesta por el SAT-solver con la teoría $Delta inicial del juego. El resultado de esta medida no fue óptimo ya que existían configuraciones en las que no solo se creaban varios ciclos dentro del tablero, sino que la negación de una solución particular no toma en cuenta las combinaciones de los ciclos de todos los colores.
+
+Es por esto que la medida final ante este problema fue reconocer las posiciones del tablero donde se creaban ciclos y negar únicamente el conjunto de variables que representan las direcciones de las celdas que forman parte de él. De esta forma, se obtiene, por ejemplo, para el juego anterior la siguiente solución:
