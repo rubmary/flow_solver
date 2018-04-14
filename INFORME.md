@@ -55,7 +55,10 @@ Las cláusulas utilizadas fueron las siguientes:
 
 * Cada casilla tiene un color
 
-$$ (\exist r | 0 \leq r \and r < R | c(i, j, r)) $$
+$$
+(\exists r | 0 \leq r  \leq R : c(i, j, r))
+$$
+
 
 ## Cantidad total de cláusulas
 
