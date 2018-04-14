@@ -57,7 +57,9 @@ Las cláusulas utilizadas fueron las siguientes:
 
 * Cada casilla tiene un color
 
-(∃r∣0≤r≤R:c(i,j,r))
+| Fórmula |
+| :-: |
+| (∃r∣0≤r≤R:c(i,j,r)) |
 
 * No hay una casilla con más de un color
 
@@ -86,6 +88,10 @@ Las imágenes obtenidas se encuentran en la carpeta *images*. Se lograron resolv
 
 Es importante destacar que las cláusulas que se utilizaron no restrigieron la creación de ciclos, esto, aunado a que ninguna celda del tablero puede quedar vacía, podía generar soluciones como la siguiente.
 
+![Alt text](/figures/cycles.png?raw=true "Solucion con ciclos")
+
 Como esto no representa una solución valida para el juego, un primero intento de atacar esto fue unir el conjunto de las negaciones de cada solución con ciclos que fuese propuesta por el SAT-solver con la teoría $Delta inicial del juego. El resultado de esta medida no fue óptimo ya que existían configuraciones en las que no solo se creaban varios ciclos dentro del tablero, sino que la negación de una solución particular no toma en cuenta las combinaciones de los ciclos de todos los colores.
 
 Es por esto que la medida final ante este problema fue reconocer las posiciones del tablero donde se creaban ciclos y negar únicamente el conjunto de variables que representan las direcciones de las celdas que forman parte de él. De esta forma, se obtiene, por ejemplo, para el juego anterior la siguiente solución:
+
+![Alt text](/figures/no_cycles.png?raw=true "Solucion sin ciclos")
