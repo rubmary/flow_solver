@@ -63,15 +63,21 @@ Las cláusulas utilizadas fueron las siguientes:
 
 * No hay una casilla con más de un color
 
-(\forall r1, r2 | r1 \neq r2 : c(i, j, r1) \rightarrow \neg c(i, j , r2))
+| Fórmula |
+| :-: |
+| (∀r1,r2∣r1≠r2:c(i,j,r1)→¬c(i,j,r2)) |
 
 * Cada casilla tiene una dirección
 
-(∃k∣0≤k≤K:c(i,j,k))
+| Fórmula |
+| :-: |
+| (∃k∣0≤k≤K:c(i,j,k)) |
 
 * No hay una casillas con mas de una dirección
 
-(\forall k1, k2 | k1 \neq k2 : c(i, j, k1) \rightarrow \neg c(i, j , k2))
+| Fórmula |
+| :-: |
+| (∀k1,k2∣k1≠k2:c(i,j,k1)→¬c(i,j,k2)) |
 
 * Consistencia de colores de casillas en los caminos: esto indica que las casillas que formen al mismo camino, deben tener el mismo color.
 
