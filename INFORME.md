@@ -12,7 +12,7 @@ Fernando Yánez 13-11506 <br>
 
 El objetivo del proyecto fue construir un solucionador de juegos "Flow". El juego consta de un tablero NxM, el cual inicialmente tiene 2R círculos, de R colores diferentes con exactamente 2 círculos por color, en celdas diferentes del tablero y el resto del tablero se encuentra vacío. El objetivo del juego consiste en conectar cada par de puntos del mismo color formando un camino con celdas que compartan un lado, sin que los caminos se intersecten y si dejar celdas vacías. Una posible instancia resuelta del juego es la siguiente:
 
-![Alt text](/figures?raw=true "solution.png")
+![Alt text](/figures/solution.png?raw=true "Juego")
 
 De esta forma, se utilizó un *SAT solver*, para lo cual primero se creó una teoría proposicional &Delta; tal que la teoría tiene una solución $acíclica$ si y sólo si el juego tiene solución y cada solución del juego está en correspondencia con un modelo de la teoría. Solución $acíclica$ significa que no se tienen ciclos en el grafo generado al considerar las celdas como vértices y los arcos los lados que pertenezcan a dos celdas del mismo color.
 
