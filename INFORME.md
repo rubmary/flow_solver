@@ -10,14 +10,14 @@ Fernando Yánez 13-11506 <br>
 
 # 1. Resumen
 
-El objetivo del proyecto fue construir un solucionador de juegos "Flow", el cual consiste en conectar cada par de puntos del mismo color en un tablero NxM, sin dejar ninguna celda del tablero vacía.
+El objetivo del proyecto fue construir un solucionador de juegos "Flow". El juego consta de un tablero NxM, el cual inicialmente tiene 2R círculos, de R colores diferentes con exactamente 2 círculos por color, en celdas diferentes del tablero y el resto del tablero se encuentra vacío. El objetivo del juego consiste en conectar cada par de puntos del mismo color formando un camino con celdas que compartan un lado, sin que los caminos se intersecten y si dejar celdas vacías.
 
-Así pues, se utilizó un *SAT solver*, para lo cual primero se creó una teoría proposicional &Delta; tal que la teoría es satisfacible si y sólo si el juego tiene solución y cada solución del juego está en correspondencia con un modelo de la teoría.
+Así pues, se utilizó un *SAT solver*, para lo cual primero se creó una teoría proposicional &Delta; tal que la teoría tiene una solución $acíclica$ si y sólo si el juego tiene solución y cada solución del juego está en correspondencia con un modelo de la teoría. Solución $acíclica$ significa que no se tienen ciclos en el grafo generado al considerar las celdas como vértices y los arcos los lados que pertenezcan a dos celdas del mismo color.
 
 Para esto se realizó lo siguiente:
 1. Un codificador que, dado una configuracion inicial de Flow, lo traduce en una teoría proposicional &Delta;
-2. Un decodificador que, dado un modelo de la teoría, lo decodifica a una solución del juego;
-3. Un solucionador que crea una imagen correspondiente a la solución.
+2. Un decodificador que, dado un modelo de la teoría, lo decodifica a una solución del juego y crea una imagen correspondiente a la solución.
+3. Un solucionador que verifica si una solución del juego tiene ciclos, y en caso afirmativo agrega cláusulas correspondientes a cada ciclo y los agrega a la teoría para volver a llamar al minisat. Este proceso se repita hasta que se consiga una solución acíclica
 4. Un script que utiliza el codificador, decodificador, el SAT solver *minisat* y el solucionador para resolver los juegos del benchmark utilizado.
 
 # 2. Teoría proposicional &Delta;
@@ -28,7 +28,7 @@ Se utilizaron las siguientes variables para la teoría &Delta;
 
 | variable | interpretación |
 | :-- | :-- |
-| c(i, j, r) | La celda (i, j) se encuentra encendida de color r |
+| c(i, j, r) | La celda (i, j) es de color r |
 | d(i, j, k) | La celda (i, j) tiene dirección k |
 
 donde el dominio Dc={ r : r entero y pertenece al intervalo [0,R-1]}, con R igual al número de colores distintos presentes en la configuración inicial,
@@ -52,6 +52,10 @@ donde ti es una celda terminal con dirección i; i = u(up), r(right), d(down), l
 ## Cláusulas
 
 Las cláusulas utilizadas fueron las siguientes:
+
+* Cada casilla tiene un color
+
+$$ (\exist r | 0 \leq r \and r < R | c(i, j, r)) $$
 
 ## Cantidad total de cláusulas
 
